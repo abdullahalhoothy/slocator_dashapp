@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # DashApp service (standalone)
+  dashapp:
+    container_name: dashapp_standalone
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8050:8050"
+    environment:
+      # Backend URL - change this to point to your backend service
+      # For local development: http://localhost:8000
+      # For docker network: http://backend:8000
+      - BACKEND_URL=${BACKEND_URL:-http://localhost:8000}
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY:-your-secret-key-here}
+    volumes:
+      # Persistent volumes for sessions and reports
+      - dashapp-sessions:/app/tool_bridge_mcp_server/sessions
+      - dashapp-reports:/app/reports
+    networks:
+      - dashapp-network
+    restart: unless-stopped
+
+# Named volumes for persistent data
+volumes:
+  dashapp-sessions:
+    driver: local
+  dashapp-reports:
+    driver: local
+
+networks:
+  dashapp-network:
+    driver: bridge
