@@ -7,14 +7,6 @@ import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
-# Import configuration for FastAPI endpoints
-import sys
-import os
-
-# Load environment variables from .env file
-from dotenv import load_dotenv
-load_dotenv()
-
 # Import our custom modules
 from ReportDataManager import report_data_manager
 from ReportAppUIBuilder import report_app_ui_builder
@@ -27,7 +19,7 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.config.suppress_callback_exceptions = True
 
 # Configure Flask server with secret key for session management
-app.server.secret_key = os.getenv('FLASK_SECRET_KEY', 'dev-secret-key-change-in-production-' + os.urandom(24).hex())
+app.server.secret_key = Config.FLASK_SECRET_KEY
 
 # Configure static file serving for plots using Config
 Config.validate_paths()  # Ensure all directories exist
@@ -49,8 +41,7 @@ async def authenticate_user_direct(email: str, password: str) -> dict:
         dict with 'success', 'data' (if success), 'error' (if failure)
     """
     try:
-        backend_url = os.getenv("BACKEND_URL", "http://localhost:8000")
-        endpoint_url = backend_url + "/fastapi/login"
+        endpoint_url = Config.BACKEND_URL + Config.LOGIN_ENDPOINT
         payload = {
             "message": "login request from dash app",
             "request_info": {},
@@ -101,7 +92,7 @@ async def update_mcp_session_auth(user_id: str, id_token: str, refresh_token: st
         client = get_or_create_client()
         await ensure_client_connected()
 
-        session_id = "dash_session"  # Matches the client session ID
+        session_id = Config.DASH_SESSION_ID
 
         print(f"[AUTH] Storing auth tokens for MCP SSE session (user: {user_id})", flush=True)
 
@@ -145,7 +136,7 @@ async def logout_user() -> bool:
         bool: True if successful, False otherwise
     """
     try:
-        session_id = "dash_session"
+        session_id = Config.DASH_SESSION_ID
 
         # Clear local session storage
         metadata_path = Path(Config.get_session_file_path(f"{session_id}_auth.json"))
@@ -174,7 +165,7 @@ def get_current_auth_status() -> dict:
         dict with 'authenticated', 'user_id', 'expires_at'
     """
     try:
-        session_id = "dash_session"
+        session_id = Config.DASH_SESSION_ID
 
         # Check local session storage
         metadata_path = Path(Config.get_session_file_path(f"{session_id}_auth.json"))
@@ -914,4 +905,4 @@ def update_interactive_scatter(selected_variable):
         return {}
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8050, debug=False)
+    app.run(host=Config.APP_HOST, port=Config.APP_PORT, debug=Config.APP_DEBUG)

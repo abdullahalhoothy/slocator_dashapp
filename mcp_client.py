@@ -9,13 +9,11 @@ the MCP SSE server and managing conversation state.
 import asyncio
 from typing import Optional
 from report_agent import SimpleMCPClient
+from config import Config
 
 
 # Global MCP client instance for memory persistence
 _mcp_client: Optional[SimpleMCPClient] = None
-
-# Thread ID for Dash conversation continuity
-DASH_THREAD_ID = "dash_conversation_main"
 
 
 def get_or_create_client() -> SimpleMCPClient:
@@ -33,7 +31,7 @@ def get_or_create_client() -> SimpleMCPClient:
     if _mcp_client is None:
         print("[>>] Creating new MCP client with memory...", flush=True)
         # Create client with specific session for Dash app
-        _mcp_client = SimpleMCPClient(session_id="dash_session")
+        _mcp_client = SimpleMCPClient(session_id=Config.DASH_SESSION_ID)
         print("[OK] MCP client created, will connect on first use", flush=True)
 
     return _mcp_client
@@ -81,4 +79,4 @@ def get_thread_id() -> str:
     Returns:
         str: The thread ID used for maintaining conversation context
     """
-    return DASH_THREAD_ID
+    return Config.DASH_THREAD_ID

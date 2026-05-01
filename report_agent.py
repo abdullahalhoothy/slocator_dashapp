@@ -131,13 +131,16 @@ class SimpleMCPClient:
             print(f"[WARNING] MCP Server health check failed: {str(e)}", flush=True)
             return False
 
-    async def connect(self, max_retries: int = 3, retry_delay: float = 2.0):
+    async def connect(self, max_retries: int = None, retry_delay: float = None):
         """Connect to MCP SSE server and initialize tools with memory
 
         Args:
-            max_retries: Maximum number of connection attempts
-            retry_delay: Delay between retry attempts in seconds
+            max_retries: Maximum number of connection attempts (defaults to config)
+            retry_delay: Delay between retry attempts in seconds (defaults to config)
         """
+        max_retries = max_retries if max_retries is not None else Config.MCP_MAX_RETRIES
+        retry_delay = retry_delay if retry_delay is not None else Config.MCP_RETRY_DELAY_SECONDS
+
         print("[>>] Connecting to MCP server...", flush=True)
         print(f"[INFO] MCP Transport: {Config.MCP_TRANSPORT}", flush=True)
         print(f"[INFO] MCP Server URL: {self.mcp_config.get(Config.MCP_SERVER_NAME, {}).get('url', 'N/A')}", flush=True)

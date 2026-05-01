@@ -1,0 +1,56 @@
+{
+  "mcp": {
+    "server_name": "saudi-location-intelligence",
+    "transport": "sse",
+    "server_url": "http://localhost:8100/sse",
+    "max_retries": 3,
+    "retry_delay_seconds": 2.0,
+    "health_check_timeout_seconds": 10.0
+  },
+
+  "backend": {
+    "url": "http://localhost:8000",
+    "login_endpoint": "/fastapi/login"
+  },
+
+  "app": {
+    "host": "0.0.0.0",
+    "port": 8050,
+    "debug": false,
+    "flask_secret_key": "dev-secret-key-change-in-production"
+  },
+
+  "llm": {
+    "default_model": "gemini-2.5-flash",
+    "default_temperature": 0
+  },
+
+  "session": {
+    "dash_session_id": "dash_session",
+    "dash_thread_id": "dash_conversation_main",
+    "session_duration_hours": 8,
+    "token_refresh_buffer_seconds": 60
+  },
+
+  "directories": {
+    "reports_dir": "reports",
+    "static_dir": "static",
+    "static_plots_dir": "static/plots",
+    "static_data_dir": "static/reports",
+    "sessions_dir": ".sessions",
+    "secrets_dir": "secrets"
+  },
+
+  "url_paths": {
+    "static_url_path": "/static",
+    "static_plots_url": "/static/plots",
+    "static_data_url": "/static/data"
+  },
+
+  "file_patterns": {
+    "supported_report_formats": [".md", ".html"],
+    "default_report_type": "md",
+    "geojson_pattern": "*.geojson",
+    "plot_image_extensions": [".png", ".jpg", ".jpeg", ".svg", ".gif"]
+  }
+}
