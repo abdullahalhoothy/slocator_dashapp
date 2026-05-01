@@ -24,19 +24,14 @@ COPY pyproject.toml ./
 # Install dependencies with uv
 RUN uv sync
 
-# Copy all DashApp files (self-contained now)
+# Copy the rest of the source tree
 COPY . /app/
 
-# Create required directories for runtime
-# These will be mounted as volumes in docker-compose, but create them for local development
-RUN mkdir -p /app/reports && \
-    mkdir -p /app/static && \
-    mkdir -p /app/.sessions && \
-    chmod -R 777 /app/.sessions && \
-    chmod -R 777 /app/reports && \
-    chmod -R 777 /app/static
+# Create required runtime directories (also volume-mounted in docker-compose)
+RUN mkdir -p /app/reports /app/static /app/.sessions && \
+    chmod -R 777 /app/.sessions /app/reports /app/static
 
 EXPOSE 8050
 
-# Run DashApp
-CMD ["uv", "run", "python", "dash_app.py"]
+# Run DashApp via the package entrypoint
+CMD ["uv", "run", "python", "-m", "slocator"]

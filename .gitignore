@@ -27,7 +27,8 @@ Thumbs.db
 
 # Application specific
 *.log
-reports/
+reports/*
+!reports/.gitkeep
 static/
 *.json.bak
 secrets/
@@ -40,6 +41,5 @@ secrets/
 .env.local
 
 # Session files (local auth storage)
-.sessions/
 .sessions/*
 !.sessions/.gitkeep

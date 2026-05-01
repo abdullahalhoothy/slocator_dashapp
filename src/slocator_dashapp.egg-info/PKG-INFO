@@ -1,0 +1,19 @@
+Metadata-Version: 2.4
+Name: slocator-dashapp
+Version: 0.1.0
+Summary: Slocator Dash chat client for the Geospatial Intelligence MCP server
+Requires-Python: >=3.13
+Requires-Dist: aiohttp>=3.12.12
+Requires-Dist: dash>=3.2.0
+Requires-Dist: dash-bootstrap-components>=2.0.3
+Requires-Dist: httpx>=0.28.1
+Requires-Dist: langchain-core>=0.3.40
+Requires-Dist: langchain-google-genai>=2.0.9
+Requires-Dist: langchain-mcp-adapters>=0.1.9
+Requires-Dist: langchain-openai>=0.3.30
+Requires-Dist: langgraph>=0.6.5
+Requires-Dist: markdown>=3.8.2
+Requires-Dist: pandas>=2.3.0
+Requires-Dist: pydantic>=1.8.2
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: slocator-models

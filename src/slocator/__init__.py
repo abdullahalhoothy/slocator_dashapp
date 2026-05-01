@@ -1,0 +1,1 @@
+"""Slocator Dash app — geospatial intelligence chat client."""

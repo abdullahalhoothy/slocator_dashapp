@@ -9,8 +9,9 @@
   },
 
   "backend": {
-    "url": "http://localhost:8000",
-    "login_endpoint": "/fastapi/login"
+    "url": "http://37.27.88.172:8000",
+    "login_endpoint": "/fastapi/login",
+    "refresh_endpoint": "/fastapi/refresh_token"
   },
 
   "app": {
@@ -26,8 +27,6 @@
   },
 
   "session": {
-    "dash_session_id": "dash_session",
-    "dash_thread_id": "dash_conversation_main",
     "session_duration_hours": 8,
     "token_refresh_buffer_seconds": 60
   },

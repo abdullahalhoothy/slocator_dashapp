@@ -1,23 +1,28 @@
+"""Configuration loader. ``config.json`` at the project root is the single
+source of truth; this module exposes the values as typed class attributes."""
+
 import json
 from pathlib import Path
 
-_config_path = Path(__file__).resolve().parent / "config.json"
-with open(_config_path, "r") as _f:
+# Project root is two levels up from src/slocator/config.py.
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+with open(PROJECT_ROOT / "config.json", "r") as _f:
     _cfg = json.load(_f)
 
 
 class AgentConfig:
-    """Configuration for the Geospatial Intelligence Analyst Agent, loaded from config.json"""
+    """Configuration for the Geospatial Intelligence Analyst Agent."""
 
-    PROJECT_ROOT = Path(__file__).resolve().parent
+    PROJECT_ROOT = PROJECT_ROOT
 
     # ===== DIRECTORY PATHS =====
-    REPORTS_DIR       = PROJECT_ROOT / _cfg["directories"]["reports_dir"]
-    STATIC_DIR        = PROJECT_ROOT / _cfg["directories"]["static_dir"]
-    STATIC_PLOTS_DIR  = PROJECT_ROOT / _cfg["directories"]["static_plots_dir"]
-    STATIC_DATA_DIR   = PROJECT_ROOT / _cfg["directories"]["static_data_dir"]
-    SESSIONS_DIR      = PROJECT_ROOT / _cfg["directories"]["sessions_dir"]
-    SECRETS_DIR       = PROJECT_ROOT / _cfg["directories"]["secrets_dir"]
+    REPORTS_DIR      = PROJECT_ROOT / _cfg["directories"]["reports_dir"]
+    STATIC_DIR       = PROJECT_ROOT / _cfg["directories"]["static_dir"]
+    STATIC_PLOTS_DIR = PROJECT_ROOT / _cfg["directories"]["static_plots_dir"]
+    STATIC_DATA_DIR  = PROJECT_ROOT / _cfg["directories"]["static_data_dir"]
+    SESSIONS_DIR     = PROJECT_ROOT / _cfg["directories"]["sessions_dir"]
+    SECRETS_DIR      = PROJECT_ROOT / _cfg["directories"]["secrets_dir"]
 
     # ===== URL PATHS =====
     STATIC_URL_PATH  = _cfg["url_paths"]["static_url_path"]
@@ -29,26 +34,25 @@ class AgentConfig:
     DEFAULT_TEMPERATURE = _cfg["llm"]["default_temperature"]
 
     # ===== MCP SETTINGS =====
-    MCP_SERVER_NAME = _cfg["mcp"]["server_name"]
-    MCP_TRANSPORT   = _cfg["mcp"]["transport"]
-    MCP_SERVER_URL  = _cfg["mcp"]["server_url"]
-    MCP_MAX_RETRIES         = _cfg["mcp"]["max_retries"]
-    MCP_RETRY_DELAY_SECONDS = _cfg["mcp"]["retry_delay_seconds"]
+    MCP_SERVER_NAME          = _cfg["mcp"]["server_name"]
+    MCP_TRANSPORT            = _cfg["mcp"]["transport"]
+    MCP_SERVER_URL           = _cfg["mcp"]["server_url"]
+    MCP_MAX_RETRIES          = _cfg["mcp"]["max_retries"]
+    MCP_RETRY_DELAY_SECONDS  = _cfg["mcp"]["retry_delay_seconds"]
     MCP_HEALTH_CHECK_TIMEOUT = _cfg["mcp"]["health_check_timeout_seconds"]
 
     # ===== BACKEND SETTINGS =====
-    BACKEND_URL     = _cfg["backend"]["url"]
-    LOGIN_ENDPOINT  = _cfg["backend"]["login_endpoint"]
+    BACKEND_URL      = _cfg["backend"]["url"]
+    LOGIN_ENDPOINT   = _cfg["backend"]["login_endpoint"]
+    REFRESH_ENDPOINT = _cfg["backend"]["refresh_endpoint"]
 
     # ===== APP SETTINGS =====
-    APP_HOST             = _cfg["app"]["host"]
-    APP_PORT             = _cfg["app"]["port"]
-    APP_DEBUG            = _cfg["app"]["debug"]
-    FLASK_SECRET_KEY     = _cfg["app"]["flask_secret_key"]
+    APP_HOST         = _cfg["app"]["host"]
+    APP_PORT         = _cfg["app"]["port"]
+    APP_DEBUG        = _cfg["app"]["debug"]
+    FLASK_SECRET_KEY = _cfg["app"]["flask_secret_key"]
 
     # ===== SESSION SETTINGS =====
-    DASH_SESSION_ID              = _cfg["session"]["dash_session_id"]
-    DASH_THREAD_ID               = _cfg["session"]["dash_thread_id"]
     SESSION_DURATION_HOURS       = _cfg["session"]["session_duration_hours"]
     TOKEN_REFRESH_BUFFER_SECONDS = _cfg["session"]["token_refresh_buffer_seconds"]
 
@@ -61,17 +65,14 @@ class AgentConfig:
 
     @classmethod
     def get_mcp_config(cls) -> dict:
-        """Get MCP client configuration for SSE transport"""
         config = {
             cls.MCP_SERVER_NAME: {
                 "url": cls.MCP_SERVER_URL,
                 "transport": cls.MCP_TRANSPORT,
             }
         }
-        if cls.MCP_TRANSPORT == "sse":
-            if not cls.MCP_SERVER_URL.startswith(("http://", "https://")):
-                raise ValueError(f"SSE transport requires HTTP(S) URL, got: {cls.MCP_SERVER_URL}")
-            print(f"[MCP] SSE transport configured: {cls.MCP_SERVER_URL}", flush=True)
+        if cls.MCP_TRANSPORT == "sse" and not cls.MCP_SERVER_URL.startswith(("http://", "https://")):
+            raise ValueError(f"SSE transport requires HTTP(S) URL, got: {cls.MCP_SERVER_URL}")
         return config
 
     @classmethod
@@ -107,24 +108,12 @@ class AgentConfig:
         return str(cls.STATIC_DIR)
 
     @classmethod
-    def get_static_plots_dir(cls) -> str:
-        return str(cls.STATIC_PLOTS_DIR)
-
-    @classmethod
-    def get_static_data_dir(cls) -> str:
-        return str(cls.STATIC_DATA_DIR)
-
-    @classmethod
     def get_sessions_dir(cls) -> str:
         return str(cls.SESSIONS_DIR)
 
     @classmethod
     def get_secrets_dir(cls) -> str:
         return str(cls.SECRETS_DIR)
-
-    @classmethod
-    def get_report_file_path(cls, filename: str) -> str:
-        return str(cls.REPORTS_DIR / filename)
 
     @classmethod
     def get_session_file_path(cls, filename: str) -> str:

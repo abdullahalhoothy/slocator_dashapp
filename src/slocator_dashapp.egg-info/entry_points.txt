@@ -1,0 +1,2 @@
+[console_scripts]
+slocator = slocator.__main__:main

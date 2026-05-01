@@ -17,7 +17,7 @@ services:
       - FLASK_SECRET_KEY=${FLASK_SECRET_KEY:-your-secret-key-here}
     volumes:
       # Persistent volumes for sessions and reports
-      - dashapp-sessions:/app/tool_bridge_mcp_server/sessions
+      - dashapp-sessions:/app/.sessions
       - dashapp-reports:/app/reports
     networks:
       - dashapp-network
